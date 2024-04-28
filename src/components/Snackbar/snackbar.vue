@@ -1,17 +1,15 @@
 <template>
   <div class="text-center ma-2 d-flex">
     <v-snackbar
-      v-model="snackbar"
-      :timeout="snackbarvalue != 'info' || snackbarvalue != 'error' ? 3000 : -1"
-      :color="snackbarvalue != 'info' ? 'success' : 'error'"
+      v-model="snackbar.loader"
+      :timeout="snackbar.timer"
+      :color="snackbar.color"
       class="d-flex pa-3"
       location="bottom right"
     >
-      <div v-if="snackbarvalue == 'success'">{{ snackbarstore.snackbar.status }}</div>
-      <div v-else-if="snackbarvalue == 'error'">{{ snackbarstore.snackbar.status }}</div>
-      <div v-else>{{ snackbarstore.snackbar.status }}</div>
+      <div>{{ snackbarStore.snackbar.status }}</div>
       <template v-slot:actions>
-        <div v-if="snackbarvalue == 'info' || snackbarvalue == 'error'">
+        <div v-if="snackbar.message == 'info' || snackbar.message == 'error'">
           <v-progress-circular
             v-show="loader"
             :model-value="value"
@@ -30,8 +28,7 @@ export default {
   name: 'snack-bar',
   data() {
     return {
-      snackbarstore: usesnackbarStore(),
-      snackbar: true, // Initialize as null to avoid undefined errors
+      snackbarStore: usesnackbarStore(),
       value: 100,
       text: '',
       loader: true,
@@ -39,54 +36,9 @@ export default {
     }
   },
   computed: {
-    snackbarelay() {
-      return this.snackbarstore.getSnackbar
+    snackbar() {
+      return this.snackbarStore.getSnackbar
     }
-  },
-  watch: {
-    snacks() {}
-  },
-  mounted() {
-    setTimeout(() => {
-      if (this.snackbarstore.getSnackbar.message == 'error') {
-        this.snackbarvalue = 'error'
-        this.loader = true
-        this.snackbar = true
-        console.log('error')
-      } else if (this.snackbarstore.getSnackbar.message == 'info') {
-        this.snackbarvalue = 'info'
-        this.loader = true
-        this.snackbar = true
-        console.log('info')
-      } else if (this.snackbarstore.getSnackbar.message == 'success') {
-        this.snackbarvalue = 'success'
-        this.loader = true
-        this.snackbar = true
-        console.log('Success')
-      } else if (this.snackbarstore.getSnackbar.message == 'loading') {
-        this.snackbarvalue = 'loading'
-        this.loader = true
-        this.snackbar = true
-        console.log('loader')
-      } else {
-        this.snackbarvalue = 'info'
-        this.loader = true
-        this.snackbar = true
-        console.log('info')
-      }
-    }, 5000)
-
-    // Now this should log the snackbar object
-  },
-  created() {
-    this.snackbarelay
-    // This ensures the store has finished initializing before accessing snackbar
-  },
-  methods: {
-    change() {
-      this.loader = !this.loader
-    },
-    updated() {}
   }
 }
 </script>

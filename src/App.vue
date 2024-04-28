@@ -11,14 +11,16 @@
           <img src="https://glsc.gov.gy/wp-content/uploads/2017/11/logo4.png" style="width: 75%" />
         </v-list-item>
       </v-list>
+
+      <!-- Nested list -->
       <v-list>
+        <!-- List item for '/' route -->
         <v-list-item to="/" class="d-flex">
           <span class="material-symbols-outlined"> groups </span>
           &nbsp;&nbsp;Applicants
         </v-list-item>
-      </v-list>
 
-      <v-list>
+        <!-- List item for '/Create-Person' route -->
         <v-list-item to="/Create-Person">
           <span class="material-symbols-outlined"> person_add </span> &nbsp;&nbsp;Create Applicant
         </v-list-item>
@@ -48,31 +50,10 @@
   </v-app>
 </template>
 
-<script>
+<script setup>
 import Snackbar from '@/components/Snackbar/snackbar.vue'
+import { ref } from 'vue'
+const name = 'App'
 
-import { usesnackbarStore } from './stores/snackbar'
-
-export default {
-  name: 'App',
-  components: {
-    Snackbar
-  },
-  data() {
-    return {
-      drawer: true,
-      showhide: true,
-      snackbarLoader: usesnackbarStore()
-    }
-  },
-  created() {},
-  watch() {},
-
-  mounted() {},
-  computed: {
-    snackbarStore() {
-      return this.snackbarloader
-    }
-  }
-}
+const drawer = ref(false)
 </script>

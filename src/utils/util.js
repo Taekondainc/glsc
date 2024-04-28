@@ -1,3 +1,0 @@
-function snackbarchanges(params) {
-    
-}

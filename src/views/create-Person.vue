@@ -71,7 +71,7 @@ const initialState = {
   website: ' ',
   email: ' '
 }
-// Flag for form validity (optional, for disabling submit on errors)
+ 
 const usernameErrors = ref([])
 const nameErrors = ref([])
 const websiteErrors = ref([])
@@ -100,9 +100,7 @@ function checkErrors() {
 
   return true
 }
-async function Submit(event) {
-  event.preventDefault()
-
+async function Submit() {
   if (checkErrors() === true) {
     const newItem = {
       id: Math.random(),
@@ -116,11 +114,21 @@ async function Submit(event) {
 
     if (storedItems === null) {
       localStorage.setItem('items', JSON.stringify([newItem]))
-      snackbarstore.showSnackbar('success')
+      snackbarstore.showSnackbar(
+        'success',
+        'success',
+        true,
+        `applicant ${newItem.username} successfully created`
+      )
     } else {
       storedItems.push(newItem)
       localStorage.setItem('items', JSON.stringify(storedItems))
-      snackbarstore.showSnackbar('success')
+      snackbarstore.showSnackbar(
+        'success',
+        'success',
+        true,
+        `applicant ${newItem.username} successfully created`
+      )
     }
   } else {
     return

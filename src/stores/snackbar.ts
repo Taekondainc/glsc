@@ -2,7 +2,13 @@ import { defineStore } from 'pinia'
 
 export const usesnackbarStore = defineStore('snackbarloader', {
   state: () => ({
-    snackbar: { message: '', color: '', loader: false, status: '' }
+    snackbar: {
+      message: 'info',
+      color: 'info',
+      loader: false,
+      status: 'loading values',
+      timer: 3000
+    }
   }),
   getters: {
     getSnackbar() {
@@ -10,11 +16,14 @@ export const usesnackbarStore = defineStore('snackbarloader', {
     }
   },
   actions: {
-    showSnackbar(message, color, status, loader = false) {
-      this.snackbar.message = message
-      this.snackbar.color = color
-      this.snackbar.loader = loader
-      this.snackbar.status = status
+    showSnackbar(message, color, loader = false, status) {
+      this.snackbar = {
+        message: message,
+        color: color,
+        loader: loader,
+        status: status,
+        timer: 2000
+      }
     }
   }
 })

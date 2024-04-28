@@ -12,6 +12,12 @@
     <template v-slot:top>
       <v-toolbar tonal color="teal-darken-1 my-3">
         <v-toolbar-title class="text-h4">Applicant's Table</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical v-show="selected.length == 0"></v-divider>
+        <v-btn color="white" class="" variant="plain" @click="initialize()">
+          refresh
+          <v-icon class="mx-1" size="large" color="white"> mdi-refresh </v-icon>
+        </v-btn>
+
         <v-divider class="mx-4" inset vertical v-show="!selected.length == 0"></v-divider>
         <v-btn
           color="error"
@@ -37,9 +43,9 @@
         ></v-text-field>
         <v-divider class="mx-2" inset vertical></v-divider>
       </v-toolbar>
-      <v-dialog v-model="dialogDeleted" :max-width="this.selected == 0 ? '500px' : '585px'">
+      <v-dialog v-model="dialogDeleted" :max-width="selected == 0 ? '500px' : '585px'">
         <v-card>
-          <v-card-title class="text-h5 text-center" v-if="this.selected == 0"
+          <v-card-title class="text-h5 text-center" v-if="selected == 0"
             >Are you sure you want to delete {{ editedItem.username }}</v-card-title
           >
           <v-card-title class="text-h5" v-else
@@ -50,21 +56,10 @@
             <v-btn color="error" variant="tonal" @click="closeDeleted">Cancel</v-btn>
             <v-btn color="success" variant="tonal" @click="deleteItemsConfirmed()">OK</v-btn>
             <v-spacer></v-spacer>
-          </v-card-actions> 
+          </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="dialog" max-width="600px">
-        <!-- <template v-slot:activator="{ props }">
-            <v-btn
-              class="mb-2 elevation-3 border-2 border-white"
-              variant="outlined"
-              color="white"
-              dark
-              v-bind="props"
-            >
-              Create Person
-            </v-btn>
-          </template> -->
         <v-card class="w-85 elevation-1 pa-5 py-5">
           <div class="text-h2 mt-5 teal--text text--darken-2">
             <b>Update {{ editedItem.username }}'s Data</b>
@@ -145,196 +140,173 @@
     </template>
   </v-data-table>
 </template>
-<script>
+<script setup>
 import axios from 'axios'
 import { usesnackbarStore } from '@/stores/snackbar'
-export default {
-  data: () => ({
-    dialog: false,
-    dialogDelete: false,
-    dialogDeleted: false,
-    search: '',
-    hidesection: false,
-    selected: [],
-    headers: [
-      { title: 'Username', key: 'username' },
-      { title: 'Name', key: 'name' },
-      { title: 'Email', key: 'email' },
-      { title: 'Website', key: 'website' },
-      { title: 'Actions', key: 'actions', sortable: false }
-    ],
-    persons: [],
-    snackbarstore: usesnackbarStore(),
-    editedIndex: -1,
-    editedItem: {
-      name: '',
-      username: '',
-      email: '',
-      website: ''
-    },
-    defaultItem: {
-      name: '',
-      username: '',
-      email: '',
-      website: ''
-    }
-  }),
+import { ref, onMounted } from 'vue'
 
-  computed: {
-    //   snackbarshowing() {
-    //     return this.snackbarstore.showSnackbar('success', 'success', ' true')
-    //   },
-    formTitle() {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-    }
-  },
-  mounted() {
-    // if (this.$refs.selected != null) this.hidesection = true
-    // else this.hidesection = false
-  },
-  watch: {},
-  created() {
-    this.initialize()
-    // this.snackbarstore.showSnackbar('info')
-    // console.log(this.snackbarstore.snackbar)
-  },
+const dialog = ref(false)
+const dialogDelete = ref(false)
+const dialogDeleted = ref(false)
+const search = ref('')
+const selected = ref([])
+const headers = ref([
+  { title: 'Username', key: 'username' },
+  { title: 'Name', key: 'name' },
+  { title: 'Email', key: 'email' },
+  { title: 'Website', key: 'website' },
+  { title: 'Actions', key: 'actions', sortable: false }
+])
+const persons = ref([])
+const snackbarstore = usesnackbarStore()
+const editedIndex = ref(-1)
+const editedItem = ref({
+  name: '',
+  username: '',
+  email: '',
+  website: ''
+})
+const defaultItem = ref({
+  name: '',
+  username: '',
+  email: '',
+  website: ''
+})
 
-  methods: {
-    initialize() {
-      setTimeout(() => {
-        if (localStorage.getItem('items') == null) {
-          axios
-            .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
-            .then((res) => {
-              const json = res.data
-              this.persons = json
-              localStorage.setItem('items', JSON.stringify(json))
+onMounted(initialize)
 
-              this.snackbarstore.showSnackbar(
-                'success',
-                'success',
-                'successfully Loaded !!!',
-                'true'
-              )
-            })
-            .catch((error) => {
-              console.error('Error fetching data:', error)
-            })
-        } else if (localStorage.getItem('items') == '[]') {
-          axios
-            .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
-            .then((res) => {
-              const json = res.data
-              this.persons = json
-              localStorage.setItem('items', JSON.stringify(json))
-              this.snackbarstore.showSnackbar(
-                'success',
-                'success',
-                'successfully Loaded !!!',
-                'true'
-              )
-            })
-            .catch((error) => {
-              console.error('Error fetching data:', error)
-            })
-        } else if (localStorage.getItem('items') != '[]' && localStorage.getItem('items') != null) {
-          this.snackbarstore.showSnackbar('success', 'success', 'successfully Loaded !!!', 'true')
-          const fields = JSON.parse(localStorage.items)
-          this.persons = fields
-        } else {
-          this.snackbarstore.showSnackbar('success', 'success', 'successfully Loaded !!!', 'true')
-        }
-      }, 1000)
-    },
+async function initialize() {
+  if (localStorage.getItem('items') == null) {
+    axios
+      .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
+      .then((res) => {
+        const json = res.data
+        persons.value = json
+        localStorage.setItem('items', JSON.stringify(json))
 
-    editItem(value) {
-      this.editedIndex = this.persons.indexOf(value)
-      this.editedItem = Object.assign({}, value)
-      this.dialog = true
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.persons.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm(value) {
-      this.persons.splice(this.editedIndex, 1)
-
-      let storedValues = JSON.parse(localStorage.getItem('items')) || []
-
-      storedValues = storedValues.filter((item) => item.id !== value)
-      this.persons = storedValues
-      localStorage.setItem('items', JSON.stringify(storedValues))
-
-      this.snackbarstore.showSnackbar('success', 'success', 'successfully updated', 'true')
-
-      this.snackbarshowing
-      this.closeDelete()
-    },
-    deletedItems() {
-      this.dialogDeleted = true
-    },
-    deleteItemsConfirmed() {
-      const values = this.persons.filter((item) => !this.selected.includes(item.id))
-      this.persons = values
-
-      localStorage.setItem('items', JSON.stringify(values))
-      this.snackbarstore.showSnackbar('success', 'success', 'successfully updated', 'true')
-      this.snackbarshowing
-      this.closeDeleted()
-      // console.log(values)
-      // console.log(this.persons)
-    },
-    closeDeleted() {
-      this.dialogDeleted = false
-
-      this.selected = []
-    },
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
+        snackbarstore.showSnackbar('success', 'success', true, 'successfully Load')
       })
-    },
-
-    closeDelete() {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-        this.selected = []
+      .catch((error) => {
+        console.error('Error fetching data:', error)
       })
-    },
-
-    save(value) {
-      if (this.editedIndex > -1) {
-        Object.assign(this.persons[this.editedIndex], this.editedItem)
-
-        const newItem = {
-          name: this.editedItem.name,
-          username: this.editedItem.username,
-          email: this.editedItem.email,
-          website: this.editedItem.website
-        }
-        let storedValues = JSON.parse(localStorage.getItem('items')) || []
-
-        const index = storedValues.findIndex((item) => item.id === value)
-
-        storedValues[index] = newItem
-
-        this.persons = storedValues
-        localStorage.setItem('items', JSON.stringify(storedValues))
-
-        this.snackbarstore.showSnackbar('success', 'success', 'successfully updated', 'true')
-      } else {
-        this.snackbarstore.showSnackbar('success', 'success', 'successfully updated', 'true')
-      }
-      this.close()
-    }
+  } else if (localStorage.getItem('items') == '[]') {
+    axios
+      .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
+      .then((res) => {
+        const json = res.data
+        persons.value = json
+        localStorage.setItem('items', JSON.stringify(json))
+        snackbarstore.showSnackbar('success', 'success', true, 'successfully Loaded')
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error)
+      })
+  } else if (localStorage.getItem('items') != '[]' && localStorage.getItem('items') != null) {
+    const fields = JSON.parse(localStorage.items)
+    persons.value = fields
+    snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
+  } else {
+    snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
   }
+}
+
+function editItem(value) {
+  editedIndex.value = this.persons.indexOf(value)
+  editedItem.value = Object.assign({}, value)
+  dialog.value = true
+}
+
+function deleteItem(item) {
+  editedIndex.value = this.persons.indexOf(item)
+  editedItem.value = Object.assign({}, item)
+  dialogDelete.value = true
+}
+
+function deleteItemConfirm(value) {
+  this.persons.splice(this.editedIndex, 1)
+
+  let storedValues = JSON.parse(localStorage.getItem('items')) || []
+  const storeindex = storedValues.findIndex((val) => val.id === value)
+  const person = storedValues[storeindex].username
+
+  storedValues = storedValues.filter((item) => item.id !== value)
+
+  persons.value = storedValues
+  localStorage.setItem('items', JSON.stringify(storedValues))
+
+  snackbarstore.showSnackbar('success', 'success', true, `successfully Deleted ${person}`)
+
+  closeDelete()
+}
+function deletedItems() {
+  dialogDeleted.value = true
+}
+function deleteItemsConfirmed() {
+  const savedValues = persons.value
+  const values = persons.value.filter((item) => !selected.value.includes(item.id))
+  persons.value = values
+
+  localStorage.setItem('items', JSON.stringify(values))
+  if (selected.value.length < 2) {
+    const id = selected.value[0]
+    const personid = savedValues.findIndex((item) => item.id === id)
+
+    const applicant = savedValues[personid].username
+
+    snackbarstore.showSnackbar('success', 'success', true, `successfully Deleted ${applicant}`)
+  } else {
+    snackbarstore.showSnackbar('success', 'success', true, 'successfully Deleted Aplicants')
+  }
+
+  closeDeleted()
+}
+function closeDeleted() {
+  dialogDeleted.value = false
+
+  selected.value = []
+}
+function close() {
+  dialog.value = false
+  ref(() => {
+    editedItem.value = Object.assign({}, this.defaultItem)
+    editedIndex.value = -1
+  })
+}
+
+function closeDelete() {
+  dialogDelete.value = false
+  ref(() => {
+    editedItem.value = Object.assign({}, this.defaultItem)
+    editedIndex.value = -1
+    selected.value = []
+  })
+}
+
+function save(value) {
+  if (this.editedIndex > -1) {
+    Object.assign(this.persons[this.editedIndex], this.editedItem)
+
+    const newItem = {
+      name: this.editedItem.name,
+      username: this.editedItem.username,
+      email: this.editedItem.email,
+      website: this.editedItem.website
+    }
+    let storedValues = JSON.parse(localStorage.getItem('items')) || []
+
+    const index = storedValues.findIndex((item) => item.id === value)
+
+    storedValues[index] = newItem
+    const person = storedValues[index].username
+
+    persons.value = storedValues
+    localStorage.setItem('items', JSON.stringify(storedValues))
+
+    snackbarstore.showSnackbar('success', 'success', true, `${person} successfully updated`)
+  } else {
+    snackbarstore.showSnackbar('success', 'success', true, `${person}successfully updated`)
+  }
+  this.close()
 }
 </script>
 <style>
