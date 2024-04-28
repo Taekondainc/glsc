@@ -284,14 +284,14 @@ function closeDelete() {
 }
 
 function save(value) {
-  if (editedIndex > -1) {
+  if (editedIndex.value > -1) {
     Object.assign(persons[editedIndex], editedItem)
 
     const newItem = {
-      name: editedItem.name,
-      username: editedItem.username,
-      email: editedItem.email,
-      website: editedItem.website
+      name: editedItem.value.name,
+      username: editedItem.value.username,
+      email: editedItem.value.email,
+      website: editedItem.value.website
     }
     let storedValues = JSON.parse(localStorage.getItem('items')) || []
 
