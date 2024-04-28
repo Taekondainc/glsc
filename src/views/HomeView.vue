@@ -304,6 +304,14 @@ function save(value) {
 
     snackbarstore.showSnackbar('success', 'success', true, `${person} successfully updated`)
   } else {
+    let storedValues = JSON.parse(localStorage.getItem('items')) || []
+
+    const index = storedValues.findIndex((item) => item.id === value)
+
+    storedValues[index] = newItem
+    const person = storedValues[index].username
+
+    
     snackbarstore.showSnackbar('success', 'success', true, `${person}successfully updated`)
   }
   this.close()
