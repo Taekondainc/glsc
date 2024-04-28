@@ -283,7 +283,7 @@ function closeDelete() {
 }
 
 function save(value) {
-  if (editedIndex.value > -1) {
+  if (editedIndex > -1) {
     Object.assign(persons[editedIndex], editedItem)
 
     const newItem = {
