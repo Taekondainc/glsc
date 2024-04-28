@@ -212,7 +212,7 @@ async function initialize() {
 
 function editItem(values) {
   editedIndex.value = persons.value.indexOf(values)
-  editedItem.value = Object.assign({}, value)
+  editedItem.value = Object.assign({}, values)
   dialog.value = true
 }
 
@@ -223,7 +223,7 @@ function deleteItem(item) {
 }
 
 function deleteItemConfirm(value) {
-   persons.splice(this.editedIndex, 1)
+   persons.splice(editedIndex, 1)
 
   let storedValues = JSON.parse(localStorage.getItem('items')) || []
   const storeindex = storedValues.findIndex((val) => val.id === value)
@@ -268,7 +268,7 @@ function closeDeleted() {
 function close() {
   dialog.value = false
   ref(() => {
-    editedItem.value = Object.assign({}, this.defaultItem)
+    editedItem.value = Object.assign({}, defaultItem)
     editedIndex.value = -1
   })
 }
@@ -276,21 +276,21 @@ function close() {
 function closeDelete() {
   dialogDelete.value = false
   ref(() => {
-    editedItem.value = Object.assign({}, this.defaultItem)
+    editedItem.value = Object.assign({}, defaultItem)
     editedIndex.value = -1
     selected.value = []
   })
 }
 
 function save(value) {
-  if (this.editedIndex > -1) {
-    Object.assign(persons[this.editedIndex], this.editedItem)
+  if (editedIndex > -1) {
+    Object.assign(persons[editedIndex], editedItem)
 
     const newItem = {
-      name: this.editedItem.name,
-      username: this.editedItem.username,
-      email: this.editedItem.email,
-      website: this.editedItem.website
+      name: editedItem.name,
+      username: editedItem.username,
+      email: editedItem.email,
+      website: editedItem.website
     }
     let storedValues = JSON.parse(localStorage.getItem('items')) || []
 
