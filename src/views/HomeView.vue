@@ -223,7 +223,7 @@ function deleteItem(item) {
 }
 
 function deleteItemConfirm(value) {
-  this.persons.splice(this.editedIndex, 1)
+   persons.splice(this.editedIndex, 1)
 
   let storedValues = JSON.parse(localStorage.getItem('items')) || []
   const storeindex = storedValues.findIndex((val) => val.id === value)
@@ -284,7 +284,7 @@ function closeDelete() {
 
 function save(value) {
   if (this.editedIndex > -1) {
-    Object.assign(this.persons[this.editedIndex], this.editedItem)
+    Object.assign(persons[this.editedIndex], this.editedItem)
 
     const newItem = {
       name: this.editedItem.name,
