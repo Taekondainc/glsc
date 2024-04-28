@@ -211,13 +211,13 @@ async function initialize() {
 }
 
 function editItem(values) {
-  editedIndex.value = persons.indexOf(values)
+  editedIndex.value = persons.value.indexOf(values)
   editedItem.value = Object.assign({}, value)
   dialog.value = true
 }
 
 function deleteItem(item) {
-  editedIndex.value =persons.indexOf(item)
+  editedIndex.value =persons.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialogDelete.value = true
 }
