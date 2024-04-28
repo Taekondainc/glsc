@@ -28,13 +28,8 @@
         class="text-h5 my-7"
         :error-messages="websiteErrors"
         @input="checkErrors"
-        variant="outlined"
-<<<<<<< HEAD
-=======
-        
->>>>>>> 2c06e7895b4bb77f812e95f0a24cd9728d731e46
-      />
-
+        variant="outlined" 
+/>
       <v-text-field
         v-model="formData.email"
         label="Email"
@@ -54,8 +49,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from 'axios'
+import { ref } from 'vue' 
 import { usesnackbarStore } from '@/stores/snackbar'
 const formData = ref({
   username: '',

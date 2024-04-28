@@ -10,7 +10,7 @@
     show-select
   >
     <template v-slot:top>
-      <v-toolbar tonal color="teal-darken-1 my-3">
+      <v-toolbar variant="tonal" color="teal-darken-1 my-3">
         <v-toolbar-title class="text-h4">Applicant's Table</v-toolbar-title>
         <v-divider class="mx-4" inset vertical v-show="selected.length == 0"></v-divider>
         <v-btn color="white" class="" variant="plain" @click="initialize()">
