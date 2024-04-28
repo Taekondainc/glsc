@@ -210,14 +210,14 @@ async function initialize() {
   }
 }
 
-function editItem(value) {
-  editedIndex.value = this.persons.indexOf(value)
+function editItem(values) {
+  editedIndex.value = persons.indexOf(values)
   editedItem.value = Object.assign({}, value)
   dialog.value = true
 }
 
 function deleteItem(item) {
-  editedIndex.value = this.persons.indexOf(item)
+  editedIndex.value =persons.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialogDelete.value = true
 }
