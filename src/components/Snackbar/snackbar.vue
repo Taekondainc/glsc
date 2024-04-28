@@ -22,23 +22,14 @@
     </v-snackbar>
   </div>
 </template>
-<script>
+<script setup>
 import { usesnackbarStore } from '../../stores/snackbar.ts'
-export default {
-  name: 'snack-bar',
-  data() {
-    return {
-      snackbarStore: usesnackbarStore(),
-      value: 100,
-      text: '',
-      loader: true,
-      snackbarvalue: ''
-    }
-  },
-  computed: {
-    snackbar() {
-      return this.snackbarStore.getSnackbar
-    }
-  }
-}
+import { ref, computed } from 'vue'
+
+const snackbarStore = usesnackbarStore()
+const value = ref(100)
+
+const snackbar = computed(() => {
+  return snackbarStore.getSnackbar
+})
 </script>
