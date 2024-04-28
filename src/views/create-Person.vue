@@ -29,10 +29,7 @@
         :error-messages="websiteErrors"
         @input="checkErrors"
         variant="outlined"
-        :rules="[
-          (v) => !!v || 'Website is required',
-          (v) => /^[\w.-]+(\.[a-z]{2,6})+$/.test(v) || 'Invalid website URL format'
-        ]"
+        
       />
 
       <v-text-field
