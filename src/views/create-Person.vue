@@ -29,6 +29,10 @@
         :error-messages="websiteErrors"
         @input="checkErrors"
         variant="outlined"
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 2c06e7895b4bb77f812e95f0a24cd9728d731e46
       />
 
       <v-text-field

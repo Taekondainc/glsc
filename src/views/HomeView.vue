@@ -210,20 +210,21 @@ async function initialize() {
   }
 }
 
-function editItem(value) {
-  editedIndex.value = this.persons.indexOf(value)
-  editedItem.value = Object.assign({}, value)
+function editItem(values) {
+  editedIndex.value = persons.value.indexOf(values)
+  editedItem.value = Object.assign({}, values)
   dialog.value = true
 }
 
 function deleteItem(item) {
-  editedIndex.value = this.persons.indexOf(item)
+  editedIndex.value =persons.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialogDelete.value = true
 }
 
 function deleteItemConfirm(value) {
-  this.persons.splice(this.editedIndex, 1)
+  
+   persons.value.splice(editedIndex, 1)
 
   let storedValues = JSON.parse(localStorage.getItem('items')) || []
   const storeindex = storedValues.findIndex((val) => val.id === value)
@@ -268,7 +269,7 @@ function closeDeleted() {
 function close() {
   dialog.value = false
   ref(() => {
-    editedItem.value = Object.assign({}, this.defaultItem)
+    editedItem.value = Object.assign({}, defaultItem)
     editedIndex.value = -1
   })
 }
@@ -276,21 +277,21 @@ function close() {
 function closeDelete() {
   dialogDelete.value = false
   ref(() => {
-    editedItem.value = Object.assign({}, this.defaultItem)
+    editedItem.value = Object.assign({}, defaultItem)
     editedIndex.value = -1
     selected.value = []
   })
 }
 
 function save(value) {
-  if (this.editedIndex > -1) {
-    Object.assign(this.persons[this.editedIndex], this.editedItem)
+  if (editedIndex > -1) {
+    Object.assign(persons[editedIndex], editedItem)
 
     const newItem = {
-      name: this.editedItem.name,
-      username: this.editedItem.username,
-      email: this.editedItem.email,
-      website: this.editedItem.website
+      name: editedItem.name,
+      username: editedItem.username,
+      email: editedItem.email,
+      website: editedItem.website
     }
     let storedValues = JSON.parse(localStorage.getItem('items')) || []
 
@@ -304,9 +305,17 @@ function save(value) {
 
     snackbarstore.showSnackbar('success', 'success', true, `${person} successfully updated`)
   } else {
+    let storedValues = JSON.parse(localStorage.getItem('items')) || []
+
+    const index = storedValues.findIndex((item) => item.id === value)
+
+    
+    const person = storedValues[index].username
+
+    
     snackbarstore.showSnackbar('success', 'success', true, `${person}successfully updated`)
   }
-  this.close()
+  close()
 }
 </script>
 <style>
