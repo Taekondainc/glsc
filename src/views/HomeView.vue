@@ -308,7 +308,7 @@ function save(value) {
 
     const index = storedValues.findIndex((item) => item.id === value)
 
-    storedValues[index] = newItem
+    
     const person = storedValues[index].username
 
     
