@@ -223,7 +223,8 @@ function deleteItem(item) {
 }
 
 function deleteItemConfirm(value) {
-   persons.splice(editedIndex, 1)
+  
+   persons.value.splice(editedIndex, 1)
 
   let storedValues = JSON.parse(localStorage.getItem('items')) || []
   const storeindex = storedValues.findIndex((val) => val.id === value)
@@ -314,7 +315,7 @@ function save(value) {
     
     snackbarstore.showSnackbar('success', 'success', true, `${person}successfully updated`)
   }
-  this.close()
+  close()
 }
 </script>
 <style>
