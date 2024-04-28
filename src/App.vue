@@ -34,7 +34,7 @@
       ></v-app-bar-nav-icon>
 
       <v-toolbar-title class="teal--text text--darken-2">
-        <div><b> Applicant Management System</b></div>
+        <div><b> Land Management System</b></div>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon="mdi-account" variant="tonal" color="white" size="lg" class="mx-10 pa-2"></v-btn>
