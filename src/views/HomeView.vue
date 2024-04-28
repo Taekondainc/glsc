@@ -217,14 +217,13 @@ function editItem(values) {
 }
 
 function deleteItem(item) {
-  editedIndex.value =persons.value.indexOf(item)
+  editedIndex.value = persons.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialogDelete.value = true
 }
 
 function deleteItemConfirm(value) {
-  
-   persons.value.splice(editedIndex, 1)
+  persons.value.splice(editedIndex, 1)
 
   let storedValues = JSON.parse(localStorage.getItem('items')) || []
   const storeindex = storedValues.findIndex((val) => val.id === value)
@@ -284,7 +283,7 @@ function closeDelete() {
 }
 
 function save(value) {
-  if (editedIndex > -1) {
+  if (editedIndex.value > -1) {
     Object.assign(persons[editedIndex], editedItem)
 
     const newItem = {
@@ -309,11 +308,9 @@ function save(value) {
 
     const index = storedValues.findIndex((item) => item.id === value)
 
-    
     const person = storedValues[index].username
 
-    
-    snackbarstore.showSnackbar('success', 'success', true, `${person}successfully updated`)
+    snackbarstore.showSnackbar('success', 'success', true, `${person} successfully updated`)
   }
   close()
 }
