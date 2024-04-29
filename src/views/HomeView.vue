@@ -45,22 +45,7 @@
         ></v-text-field>
         <v-divider class="mx-2" inset vertical></v-divider>
       </v-toolbar>
-      <v-dialog v-model="dialogDeleted" :max-width="selected == 0 ? '500px' : '585px'">
-        <v-card>
-          <v-card-title class="text-h5 text-center" v-if="selected == 0"
-            >Are you sure you want to delete {{ editedItem.username }}</v-card-title
-          >
-          <v-card-title class="text-h5" v-else
-            >Are you sure you want to delete these Applicants???</v-card-title
-          >
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="error" variant="tonal" @click="closeDeleted">Cancel</v-btn>
-            <v-btn color="success" variant="tonal" @click="deleteItemsConfirmed()">OK</v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+
       <v-dialog v-model="dialog" max-width="600px">
         <v-card class="w-85 elevation-1 pa-5 py-5">
           <div class="text-h2 mt-5 teal--text text--darken-2">
@@ -100,6 +85,24 @@
           <v-card-actions>
             <v-btn color="error" variant="tonal" @click="close"> Cancel </v-btn>
             <v-btn color="success" variant="tonal" @click="save(editedItem.id)"> Save </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="dialogDeleted" :max-width="selected == 0 ? '500px' : '585px'">
+        <v-card>
+          <v-card-title
+            class="text-h5 text-center"
+            v-if="selected.length !== 0 && selected.length === 1"
+            >Are you sure you want to delete {{ deletedname }}</v-card-title
+          >
+          <v-card-title class="text-h5" v-else
+            >Are you sure you want to delete these Applicants???</v-card-title
+          >
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="error" variant="tonal" @click="closeDeleted">Cancel</v-btn>
+            <v-btn color="success" variant="tonal" @click="deleteItemsConfirmed()">OK</v-btn>
+            <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -245,7 +248,7 @@ function reset() {
         .catch((error) => {
           console.error('Error fetching data:', error)
         })
-    }else {
+    } else {
       const fields = JSON.parse(localStorage.items)
       persons.value = fields
       snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
@@ -255,11 +258,13 @@ function reset() {
 }
 function editItem(values) {
   editedIndex.value = persons.value.indexOf(values)
-  editedItem.value = Object.assign({}, values)
+  editedItem.value = { ...values }
   dialog.value = true
 }
-
+const deletedname = ref()
 function deleteItem(item) {
+  deletedname.value = item.username
+
   editedIndex.value = persons.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialogDelete.value = true
@@ -282,6 +287,10 @@ function deleteItemConfirm(value) {
   closeDelete()
 }
 function deletedItems() {
+  const storeval = persons.value.filter((item) => selected.value.includes(item.id))
+  const name = storeval.map((item) => item.username)
+  deletedname.value = name[0]
+
   dialogDeleted.value = true
 }
 function deleteItemsConfirmed() {
