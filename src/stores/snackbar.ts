@@ -22,7 +22,7 @@ export const usesnackbarStore = defineStore('snackbarloader', {
         color: color,
         loader: loader,
         status: status,
-        timer: 2000
+        timer: 3000
       }
     }
   }

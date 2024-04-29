@@ -5,6 +5,8 @@
     v-model="selected"
     :items="persons"
     :search="search"
+    :loading="loader"
+    loading-text="Loading applicants"
     :sort-by="[{ key: 'username', order: 'asc' }]"
     :hover="true"
     show-select
@@ -13,7 +15,7 @@
       <v-toolbar variant="tonal" color="teal-darken-1 my-3">
         <v-toolbar-title class="text-h4">Applicant's Table</v-toolbar-title>
         <v-divider class="mx-4" inset vertical v-show="selected.length == 0"></v-divider>
-        <v-btn color="white" class="" variant="plain" @click="initialize()">
+        <v-btn color="white" class="" variant="plain" @click="reset()">
           refresh
           <v-icon class="mx-1" size="large" color="white"> mdi-refresh </v-icon>
         </v-btn>
@@ -158,6 +160,7 @@ const headers = ref([
   { title: 'Actions', key: 'actions', sortable: false }
 ])
 const persons = ref([])
+const loader = ref(true)
 const snackbarstore = usesnackbarStore()
 const editedIndex = ref(-1)
 const editedItem = ref({
@@ -176,40 +179,68 @@ const defaultItem = ref({
 onMounted(initialize)
 
 async function initialize() {
-  if (localStorage.getItem('items') == null) {
-    axios
-      .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
-      .then((res) => {
-        const json = res.data
-        persons.value = json
-        localStorage.setItem('items', JSON.stringify(json))
+  setTimeout(() => {
+    if (localStorage.getItem('items') == null) {
+      axios
+        .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
+        .then((res) => {
+          const json = res.data
+          persons.value = json
+          localStorage.setItem('items', JSON.stringify(json))
 
-        snackbarstore.showSnackbar('success', 'success', true, 'successfully Load')
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error)
-      })
-  } else if (localStorage.getItem('items') == '[]') {
-    axios
-      .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
-      .then((res) => {
-        const json = res.data
-        persons.value = json
-        localStorage.setItem('items', JSON.stringify(json))
-        snackbarstore.showSnackbar('success', 'success', true, 'successfully Loaded')
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error)
-      })
-  } else if (localStorage.getItem('items') != '[]' && localStorage.getItem('items') != null) {
-    const fields = JSON.parse(localStorage.items)
-    persons.value = fields
-    snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
-  } else {
-    snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
-  }
+          snackbarstore.showSnackbar('success', 'success', true, 'successfully Load')
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error)
+        })
+    } else if (localStorage.getItem('items') == '[]') {
+      axios
+        .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
+        .then((res) => {
+          const json = res.data
+          persons.value = json
+          localStorage.setItem('items', JSON.stringify(json))
+          snackbarstore.showSnackbar('success', 'success', true, 'successfully Loaded')
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error)
+        })
+    } else if (localStorage.getItem('items') != '[]' && localStorage.getItem('items') != null) {
+      const fields = JSON.parse(localStorage.items)
+      persons.value = fields
+      snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
+    } else {
+      snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
+    }
+    loader.value = false
+  }, 2000)
 }
+function reset() {
+  persons.value = []
+  loader.value = true
+  setTimeout(() => {
+    if (localStorage.getItem('items') == null) {
+      axios
+        .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
+        .then((res) => {
+          const json = res.data
+          persons.value = json
 
+          snackbarstore.createPerson(items.value)
+          snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
+          localStorage.setItem('items', JSON.stringify(json)) // Save data to localStorage
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error)
+        })
+    } else {
+      const fields = JSON.parse(localStorage.items)
+      persons.value = fields
+      snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
+    }
+    loader.value = false
+  }, 2000)
+}
 function editItem(values) {
   editedIndex.value = persons.value.indexOf(values)
   editedItem.value = Object.assign({}, values)

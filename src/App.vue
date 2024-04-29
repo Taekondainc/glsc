@@ -47,13 +47,38 @@
     </v-main>
 
     <Snackbar />
+    <div v-if="loadingModal" class="modaldiv">
+      <v-progress-circular
+        :indeterminate="loadingModal"
+        size="200"
+        color="teal-accent-3"
+      ></v-progress-circular>
+    </div>
   </v-app>
 </template>
-
 <script setup>
 import Snackbar from '@/components/Snackbar/snackbar.vue'
-import { ref } from 'vue'
+import { usesnackbarStore } from '@/stores/snackbar'
+import { ref, watch } from 'vue'
 const name = 'App'
-
+const loadingModal = ref(true)
 const drawer = ref(false)
+const snackbarstore = usesnackbarStore()
+const lvalue = ref()
+setTimeout(() => {
+  loadingModal.value = false
+  snackbarstore.showSnackbar('Page successfully Loaded', 'info', true, 'Page successfully Loaded')
+}, 1000)
 </script>
+<style>
+.modaldiv {
+  position: fixed;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.666);
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+</style>
