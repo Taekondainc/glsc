@@ -233,7 +233,19 @@ function reset() {
         .catch((error) => {
           console.error('Error fetching data:', error)
         })
-    } else {
+    } else if (localStorage.getItem('items') == '[]') {
+      axios
+        .get(`https://jsonplaceholder.typicode.com/users?_limit=15`)
+        .then((res) => {
+          const json = res.data
+          persons.value = json
+          localStorage.setItem('items', JSON.stringify(json))
+          snackbarstore.showSnackbar('success', 'success', true, 'successfully Loaded')
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error)
+        })
+    }else {
       const fields = JSON.parse(localStorage.items)
       persons.value = fields
       snackbarstore.showSnackbar('success', 'success', true, 'successfully loaded')
