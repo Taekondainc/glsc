@@ -4,7 +4,7 @@
 
 ## git clone `https://github.com/taekondainc/glsc.git`
 
-## cd my-vite-app
+## cd glsc
 
 ## npm install
 

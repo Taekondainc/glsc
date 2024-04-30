@@ -302,7 +302,7 @@ function deleteItemsConfirmed() {
   if (selected.value.length < 2) {
     const id = selected.value[0]
     const personid = savedValues.findIndex((item) => item.id === id)
-
+    console.log(personid)
     const applicant = savedValues[personid].username
 
     snackbarstore.showSnackbar('success', 'success', true, `successfully Deleted ${applicant}`)
